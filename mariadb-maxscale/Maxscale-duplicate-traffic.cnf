@@ -1,0 +1,59 @@
+# Usecase:
+# - Need to benchmark productions queries with a benchmark-server using different configurations or store-engine
+# - Clients connect on maxscale-host:3306
+# - All queries are forwarded to prod-server:3306 and benchmarking-server:3306
+# - Queries results from prod-server are returned to client and results from benchmarking-server:3306 are discard
+
+[maxscale]
+threads=4
+
+[MySQL Monitor]
+type=monitor
+module=mysqlmon
+servers=prod-server,benchmarking-server
+user=user1
+passwd=user1
+monitor_interval=10000
+
+# That where client application will connect to.
+[Database-service Listener]
+type=listener
+service=Database-service
+protocol=MySQLClient
+port=3306
+
+[Database-service]
+type=service
+router=readconnroute
+servers=prod-server
+localhost_match_wildcard_host=1
+user=user1
+passwd=user1
+filters=Replicate-filter
+
+[Replicate-filter]
+type=filter
+module=tee
+service=Replicate-service
+
+[Replicate-service]
+type=service
+router=readconnroute
+servers=benchmarking-server
+user=user1
+passwd=user1
+localhost_match_wildcard_host=1
+
+# Servers definition
+[prod-server]
+type=server
+address=prod-server
+port=3306
+protocol=MySQLBackend
+
+[benchmarking-server]
+type=server
+address=benchmarking-server
+port=3306
+protocol=MySQLBackend
+
