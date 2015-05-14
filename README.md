@@ -5,6 +5,9 @@ All these dump and load recipes keep database(s) consistent replication-wise, an
  - [Mysqldump one-liner dump and load] (dump-and-load-slave/mysqldump-oneliner.sh)
  - [Mysqldump 2 step dump and load] (dump-and-load-slave/mysqldump-2-step.sh)
  - [File-level copy dump and load] (dump-and-load-slave/file-copy-read-lock.sh)
- 
-## TODO
+
+##### TODO
 Rewrite recipe as bash script with trap to catch error and email exit status
+
+## Maxscale
+ - [Duplicate Traffic for benchmarking] (mariadb-maxscale/Maxscale-duplicate-traffic.cnf)
